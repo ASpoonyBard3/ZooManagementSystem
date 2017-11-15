@@ -22,6 +22,7 @@ namespace Zoo.ConsoleApp
       };
       var smallAnimals = new ISmallAnimal[] {
         new Rabbit(new DateTime(2014, 1, 1)),
+        new GuineaFowl(new DateTime(2015, 1, 2))
       };
       var animals = largeAnimals.Union<IAnimal>(smallAnimals).ToList();
 

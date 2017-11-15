@@ -14,45 +14,39 @@ namespace Zoo.ConsoleApp
   {
     public static void Main()
     {
-      var lions = new[]
+      var largeAnimals = new ILargeAnimal[]
       {
         new Lion(new DateTime(2010, 4, 28)),
-        new Lion(new DateTime(2012, 5, 11))
+        new Lion(new DateTime(2012, 5, 11)),
+        new Zebra(new DateTime(2008, 12, 1))
       };
-      var otherAnimals = new Animal[] {
+      var smallAnimals = new ISmallAnimal[] {
         new Rabbit(new DateTime(2014, 1, 1)),
-        new Zebra(new DateTime(2008, 12, 1)) 
+        new GuineaFowl(new DateTime(2015, 1, 2))
       };
-      var animals = lions.Union<Animal>(otherAnimals).ToList();
+      var animals = largeAnimals.Union<ILargeAnimal>(smallAnimals).ToList();
 
-      var keepers = new[]
+      var largeAnimalKeeper = new Keeper<ILargeAnimal>(largeAnimals);
+      var smallAnimalKeeper = new Keeper<ISmallAnimal>(smallAnimals);
+
+      var keepers = new IKeeper[]
       {
-        new Keeper(lions),
-        new Keeper(otherAnimals) 
+        largeAnimalKeeper,
+        smallAnimalKeeper 
       };
+
+      var babyRabbit = new Rabbit(DateTime.Today);
+      smallAnimalKeeper.StartLookingAfter(babyRabbit);
 
       var feedingScheduler = FeedingScheduler.Instance;
       var groomingScheduler = GroomingScheduler.Instance;
 
-      while (true)
-      {
-        Console.WriteLine("Feeding the animals...");
-        feedingScheduler.AssignFeedingJobs(keepers, animals);
+      var timer = new ZooTimer();
+      new Thread(timer.Run).Start();
 
-        Console.WriteLine("Grooming the animals...");
-        groomingScheduler.AssignGroomingJobs(keepers, animals);
-
-        Console.WriteLine("Done. Results:");
-
-        foreach (var animal in animals)
-        {
-          Console.WriteLine(animal);
-        }
-
-        Console.WriteLine();
-        Thread.Sleep(1000);
-      }
-
+      timer.Tick += () => feedingScheduler.AssignFeedingJobs(keepers, animals);
+      timer.Tick += () => groomingScheduler.AssignGroomingJobs(keepers, animals);
+      timer.Tick += () => animals.ForEach(Console.WriteLine);
     }
   }
 }

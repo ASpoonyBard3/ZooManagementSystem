@@ -32,7 +32,7 @@ namespace Zoo.BusinessLogic.Services
       {
         foreach (var animal in keeper.GetResponsibleAnimals())
         {
-          if (animal.IsHungry())
+          if (animal.IsHungry)
           {
             keeper.FeedAnimal(animal);
           }

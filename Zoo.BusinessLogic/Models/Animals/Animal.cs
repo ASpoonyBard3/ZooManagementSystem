@@ -27,14 +27,12 @@ namespace Zoo.BusinessLogic.Models.Animals
       lastFed = DateTime.Now;
     }
 
-    public bool IsHungry()
-    {
-      // Obviously an animal wouldn't get hungry in a matter of seconds. 
-      // But it means we can see activity in real time when we run the code...
-      return (DateTime.Now - lastFed).TotalSeconds > Config.FeedingFrequency;
-    }
+        public bool IsHungry =>
+          // Obviously an animal wouldn't get hungry in a matter of seconds. 
+          // But it means we can see activity in real time when we run the code...
+          (DateTime.Now - lastFed).TotalSeconds > Config.FeedingFrequency;
 
-    public override string ToString()
+        public override string ToString()
     {
       return $"{GetType().Name}, last fed {lastFed}";
     }
